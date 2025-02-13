@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.InMemory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,8 +51,12 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddHttpClient("FlightApi", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("FlightApi")!));
 
-builder.Services.AddDbContext<FlightAppDbContext>(options=>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<FlightAppDbContext>(options=>
+//options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDbContext<FlightAppDbContext>(options =>
+options.UseInMemoryDatabase("FlightAppInMemory"));
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<FlightAppDbContext>();
